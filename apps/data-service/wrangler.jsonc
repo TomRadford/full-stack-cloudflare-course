@@ -9,6 +9,6 @@
 	"compatibility_date": "2025-06-17",
 	"compatibility_flags": ["nodejs_compat"],
 	"observability": {
-		"enabled": true,
-	},
+		"enabled": true
+	}
 }
