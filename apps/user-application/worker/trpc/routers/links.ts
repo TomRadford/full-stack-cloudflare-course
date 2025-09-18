@@ -26,7 +26,7 @@ export const linksTrpcRoutes = t.router({
   createLink: t.procedure
     .input(createLinkSchema)
     .mutation(async ({ input, ctx }) => {
-      await createLink({ ...input, accountId: ctx.userInfo.userId });
+      return await createLink({ ...input, accountId: ctx.userInfo.userId });
     }),
   updateLinkName: t.procedure
     .input(
