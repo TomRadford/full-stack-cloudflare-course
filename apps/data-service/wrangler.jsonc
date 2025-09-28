@@ -10,5 +10,13 @@
 	"compatibility_flags": ["nodejs_compat"],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_id": "c77c4213-31e5-4ca7-bdce-aadeb644db5b",
+			"remote": true
+		}
+	],
+	"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }]
 }
