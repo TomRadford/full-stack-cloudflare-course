@@ -12,7 +12,7 @@ export const destinationsSchema = z.preprocess(
     .object({
       default: z.string().url(),
     })
-    .catchall(z.string().url()),
+    .catchall(z.string().url())
 );
 
 export type DestinationsSchemaType = z.infer<typeof destinationsSchema>;
@@ -52,7 +52,7 @@ export const durableObjectGeoClickSchama = z.object({
 });
 
 export const durableObjectGeoClickArraySchema = z.array(
-  durableObjectGeoClickSchama,
+  durableObjectGeoClickSchama
 );
 
 export type DurableObjectGeoClickSchemaType = z.infer<

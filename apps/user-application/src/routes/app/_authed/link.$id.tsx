@@ -24,7 +24,7 @@ export const Route = createFileRoute("/app/_authed/link/$id")({
     await context.queryClient.prefetchQuery(
       context.trpc.links.getLink.queryOptions({
         linkId: params.id,
-      }),
+      })
     );
   },
 });
@@ -35,11 +35,11 @@ function RouteComponent() {
   const { data: linkInfo } = useSuspenseQuery(
     trpc.links.getLink.queryOptions({
       linkId: id,
-    }),
+    })
   );
 
   const [geoToggle, setGeoToggle] = useState(
-    linkInfo ? Object.keys(linkInfo.destinations).length > 1 : false,
+    linkInfo ? Object.keys(linkInfo.destinations).length > 1 : false
   );
 
   if (!linkInfo) {
