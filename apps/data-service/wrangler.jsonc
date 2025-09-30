@@ -18,5 +18,8 @@
 			"remote": true
 		}
 	],
-	"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }]
+	"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }],
+	"queues": {
+		"consumers": [{ "queue": "smart-links-data-queue-stage" }]
+	}
 }
