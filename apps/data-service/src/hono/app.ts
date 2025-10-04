@@ -1,12 +1,13 @@
-import { getLink } from '@repo/data-ops/queries/links';
-import { cloudflareInfoSchema, CloudflareInfoSchemaType } from '@repo/data-ops/zod-schema/links';
+import { cloudflareInfoSchema } from '@repo/data-ops/zod-schema/links';
 import { Hono } from 'hono';
 import { getDestinationForCountry, getRoutingDestinations } from '../helpers/routing-ops';
+import { LinkClickMessageType, QueueMessageSchema } from '@repo/data-ops/zod-schema/queue';
 
 export const App = new Hono<{ Bindings: Env }>();
 
 App.get('/:id', async (c) => {
-	const linkInfo = await getRoutingDestinations(c.env, c.req.param('id'));
+	const id = c.req.param('id');
+	const linkInfo = await getRoutingDestinations(c.env, id);
 
 	if (!linkInfo) {
 		return c.text('Invalid Link', 200);
@@ -21,6 +22,21 @@ App.get('/:id', async (c) => {
 	const headers = cfHeaders.data;
 
 	const destination = getDestinationForCountry(linkInfo, headers.country);
+
+	const message: LinkClickMessageType = {
+		type: 'LINK_CLICK',
+		data: {
+			id: id,
+			country: headers.country,
+			destination,
+			accountId: linkInfo.accountId,
+			latitude: headers.latitude,
+			longitude: headers.longitude,
+			timestamp: new Date().toISOString(),
+		},
+	};
+
+	c.executionCtx.waitUntil(c.env.QUEUE.send(message));
 
 	return c.redirect(destination);
 });

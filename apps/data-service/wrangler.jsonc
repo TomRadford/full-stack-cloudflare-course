@@ -20,6 +20,10 @@
 	],
 	"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }],
 	"queues": {
-		"consumers": [{ "queue": "smart-links-data-queue-stage" }]
+		"consumers": [
+			{ "queue": "smart-links-data-queue-stage", "dead_letter_queue": "smart-links-dead-letter-stage", "retry_delay": 0 },
+			{ "queue": "smart-links-dead-letter-stage" }
+		],
+		"producers": [{ "binding": "QUEUE", "queue": "smart-links-data-queue-stage" }]
 	}
 }
