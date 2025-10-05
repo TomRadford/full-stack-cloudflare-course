@@ -25,5 +25,15 @@
 			{ "queue": "smart-links-dead-letter-stage" }
 		],
 		"producers": [{ "binding": "QUEUE", "queue": "smart-links-data-queue-stage" }]
+	},
+	"workflows": [
+		{
+			"binding": "DESTINATION_EVALUATION_WORKFLOW",
+			"name": "destination-evaluation-workflow",
+			"class_name": "DestinationEvaluationWorkflow"
+		}
+	],
+	"browser": {
+		"binding": "VIRTUAL_BROWSER"
 	}
 }
