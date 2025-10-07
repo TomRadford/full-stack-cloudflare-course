@@ -47,6 +47,6 @@ export async function aiDestinationChecker(env: Env, bodyText: string) {
 
 	return {
 		status: result.object.pageStatus.status,
-		statusReason: result.object.pageStatus,
+		statusReason: result.object.pageStatus.statusReason,
 	};
 }
