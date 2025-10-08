@@ -33,7 +33,5 @@ export class DestinationEvaluationWorkflow extends WorkflowEntrypoint<Env, Desti
 			await this.env.BUCKET.put(r2PathHtml, collectedData.html);
 			await this.env.BUCKET.put(r2PathBodyText, collectedData.bodyText);
 		});
-
-		// YOU ARE AT: 11:50
 	}
 }
