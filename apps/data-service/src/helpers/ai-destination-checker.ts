@@ -5,7 +5,7 @@ import { z } from 'zod';
 export async function aiDestinationChecker(env: Env, bodyText: string) {
 	const workersAi = createWorkersAI({ binding: env.AI });
 	const result = await generateObject({
-		model: workersAi('@cf/meta/llama-3.1-8b-instruct'),
+		model: workersAi('@cf/meta/llama-3.1-8b-instruct-fp8'),
 		prompt:
 			`You will analyze the provided webpage content and determine if it reflects a product that is currently available, not available, or if the status is unclear.
 
