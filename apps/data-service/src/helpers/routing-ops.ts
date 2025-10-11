@@ -1,5 +1,6 @@
 import { getLink } from '@repo/data-ops/queries/links';
 import { linkSchema, LinkSchemaType } from '@repo/data-ops/zod-schema/links';
+import { LinkClickMessageType } from '@repo/data-ops/zod-schema/queue';
 
 export function getDestinationForCountry(linkInfo: LinkSchemaType, countryCode?: string) {
 	if (!countryCode) {
@@ -46,4 +47,15 @@ export async function getRoutingDestinations(env: Env, linkId: string) {
 	}
 	await saveLinkInfoToKv(env, linkInfoFromDb);
 	return linkInfoFromDb;
+}
+
+export async function scheduleEvalWorkflow(env: Env, event: LinkClickMessageType) {
+	const doId = env.EVALUATION_SCHEDULER.idFromName(`${event.data.id}:${event.data.destination}`);
+	const stub = env.EVALUATION_SCHEDULER.get(doId);
+	await stub.collectLinkClick({
+		linkId: event.data.id,
+		accountId: event.data.accountId,
+		destinationUrl: event.data.destination,
+		destinationCountryCode: event.data.country || 'UNKNOWN',
+	});
 }
