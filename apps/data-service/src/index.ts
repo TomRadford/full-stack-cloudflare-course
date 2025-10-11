@@ -30,4 +30,5 @@ export default class DataService extends WorkerEntrypoint<Env> {
 	}
 }
 
-export { DestinationEvaluationWorkflow } from './workflows/destination-evaluation-workflow';
+export { DestinationEvaluationWorkflow } from '@/workflows/destination-evaluation-workflow';
+export { EvaluationScheduler } from '@/durable-objects/evaluation-scheduler';
