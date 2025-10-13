@@ -59,3 +59,11 @@ export async function scheduleEvalWorkflow(env: Env, event: LinkClickMessageType
 		destinationCountryCode: event.data.country || 'UNKNOWN',
 	});
 }
+
+export async function captureLinkClickInBackground(env: Env, event: LinkClickMessageType) {
+	await env.QUEUE.send(event);
+	const doId = env.LINK_CLICK_TRACKER_OBJECT.idFromName(event.data.accountId);
+	const stub = env.LINK_CLICK_TRACKER_OBJECT.get(doId);
+	if (!event.data.latitude || !event.data.longitude || !event.data.country) return;
+	await stub.addClick(event.data.latitude, event.data.longitude, event.data.country, moment().valueOf());
+}

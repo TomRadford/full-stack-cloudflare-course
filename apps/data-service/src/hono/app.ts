@@ -36,7 +36,12 @@ App.get('/:id', async (c) => {
 		},
 	};
 
+	// YOU ARE HERE: 10:22
 	c.executionCtx.waitUntil(c.env.QUEUE.send(message));
 
 	return c.redirect(destination);
+});
+
+App.get('/click/:name', async (c) => {
+	return c.json({});
 });
