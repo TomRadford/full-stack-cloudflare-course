@@ -1,6 +1,6 @@
 import { cloudflareInfoSchema } from '@repo/data-ops/zod-schema/links';
 import { Hono } from 'hono';
-import { getDestinationForCountry, getRoutingDestinations } from '../helpers/routing-ops';
+import { captureLinkClickInBackground, getDestinationForCountry, getRoutingDestinations } from '../helpers/routing-ops';
 import { LinkClickMessageType, QueueMessageSchema } from '@repo/data-ops/zod-schema/queue';
 
 export const App = new Hono<{ Bindings: Env }>();
@@ -36,12 +36,15 @@ App.get('/:id', async (c) => {
 		},
 	};
 
-	// YOU ARE HERE: 10:22
-	c.executionCtx.waitUntil(c.env.QUEUE.send(message));
+	c.executionCtx.waitUntil(captureLinkClickInBackground(c.env, message));
 
 	return c.redirect(destination);
 });
 
 App.get('/click/:name', async (c) => {
-	return c.json({});
+	const accountId = c.req.param('name');
+	const doId = c.env.LINK_CLICK_TRACKER_OBJECT.idFromName(accountId);
+	const stub = c.env.LINK_CLICK_TRACKER_OBJECT.get(doId);
+
+	return await stub.fetch(c.req.raw);
 });

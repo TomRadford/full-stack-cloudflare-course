@@ -20,7 +20,7 @@ export class LinkClickTracker extends DurableObject {
 		});
 	}
 
-	async addClick(latitude: number, longitude: number, country: number, time: number) {
+	async addClick(latitude: number, longitude: number, country: string, time: number) {
 		this.sql.exec(
 			`
             INSERT INTO geo_link_clicks (latitude, longitude, country, time)
