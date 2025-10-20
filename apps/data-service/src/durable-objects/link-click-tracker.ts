@@ -1,14 +1,25 @@
 import { DurableObject } from 'cloudflare:workers';
 import moment from 'moment';
+import { deleteClicksBefore, getRecentClicks } from '../helpers/durable-queries';
 
-export class LinkClickTracker extends DurableObject {
+export class LinkClickTracker extends DurableObject<Env> {
 	sql: SqlStorage;
+	mostRecentOffsetTime = 0;
+	leastRecentOffsetTime = 0;
 
 	constructor(ctx: DurableObjectState, env: Env) {
 		super(ctx, env);
 		this.sql = ctx.storage.sql;
 
 		ctx.blockConcurrencyWhile(async () => {
+			const [leastRecentOffsetTime, mostRecentOffsetTime] = await Promise.all([
+				ctx.storage.get<number>('leastRecentOffsetTime'),
+				ctx.storage.get<number>('mostRecentOffsetTime'),
+			]);
+
+			this.mostRecentOffsetTime = mostRecentOffsetTime || this.mostRecentOffsetTime;
+			this.leastRecentOffsetTime = leastRecentOffsetTime || this.leastRecentOffsetTime;
+
 			this.sql.exec(`
                 CREATE TABLE IF NOT EXISTS geo_link_clicks (
                  latitude REAL NOT NULL,
@@ -31,15 +42,43 @@ export class LinkClickTracker extends DurableObject {
 			country,
 			time
 		);
+		const alarm = await this.ctx.storage.getAlarm();
+		if (!alarm) {
+			await this.ctx.storage.setAlarm(moment().add(2, 'seconds').valueOf());
+		}
+	}
+
+	async alarm() {
+		console.log('alarm');
+		const clickData = getRecentClicks(this.sql, this.mostRecentOffsetTime);
+
+		const sockets = this.ctx.getWebSockets();
+		for (const socket of sockets) {
+			socket.send(JSON.stringify(clickData.clicks));
+		}
+
+		await this.flushOffsetTimes(clickData.mostRecentTime, clickData.oldestTime);
+		deleteClicksBefore(this.sql, clickData.oldestTime);
+	}
+
+	async flushOffsetTimes(mostRecentOffsetTime: number, leastRecentOffsetTime: number) {
+		this.mostRecentOffsetTime = mostRecentOffsetTime;
+		this.leastRecentOffsetTime = leastRecentOffsetTime;
+		await this.ctx.storage.put('mostRecentOffsetTime', this.mostRecentOffsetTime);
+		await this.ctx.storage.put('leastRecentOffsetTime', this.leastRecentOffsetTime);
 	}
 
 	async fetch(_: Request) {
-		const webSockerPair = new WebSocketPair();
-		const [client, server] = Object.values(webSockerPair);
+		const webSocketPair = new WebSocketPair();
+		const [client, server] = Object.values(webSocketPair);
 		this.ctx.acceptWebSocket(server);
 		return new Response(null, {
 			status: 101,
 			webSocket: client,
 		});
+	}
+
+	webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean): void | Promise<void> {
+		console.log('client closed');
 	}
 }

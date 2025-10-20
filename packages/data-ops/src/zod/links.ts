@@ -44,7 +44,7 @@ export const cloudflareInfoSchema = z.object({
     .optional(),
 });
 
-export const durableObjectGeoClickSchama = z.object({
+export const durableObjectGeoClickSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
   time: z.number(),
@@ -52,11 +52,11 @@ export const durableObjectGeoClickSchama = z.object({
 });
 
 export const durableObjectGeoClickArraySchema = z.array(
-  durableObjectGeoClickSchama
+  durableObjectGeoClickSchema
 );
 
 export type DurableObjectGeoClickSchemaType = z.infer<
-  typeof durableObjectGeoClickSchama
+  typeof durableObjectGeoClickSchema
 >;
 
 export type CloudflareInfoSchemaType = z.infer<typeof cloudflareInfoSchema>;
