@@ -26,8 +26,8 @@ export class EvaluationScheduler extends DurableObject<Env> {
 		const alarm = await this.ctx.storage.getAlarm();
 
 		if (!alarm) {
-			const tenSeconds = moment().add(24, 'hours').valueOf();
-			await this.ctx.storage.setAlarm(tenSeconds);
+			const oneDay = moment().add(24, 'hours').valueOf();
+			await this.ctx.storage.setAlarm(oneDay);
 		}
 	}
 
