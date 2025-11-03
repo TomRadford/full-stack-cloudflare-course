@@ -11,57 +11,115 @@
 	"observability": {
 		"enabled": true
 	},
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_id": "c77c4213-31e5-4ca7-bdce-aadeb644db5b",
-			"remote": true
-		}
-	],
-	"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }],
-	"queues": {
-		"consumers": [
-			{ "queue": "smart-links-data-queue-stage", "dead_letter_queue": "smart-links-dead-letter-stage", "retry_delay": 0 },
-			{ "queue": "smart-links-dead-letter-stage" }
-		],
-		"producers": [{ "binding": "QUEUE", "queue": "smart-links-data-queue-stage" }]
-	},
-	"workflows": [
-		{
-			"binding": "DESTINATION_EVALUATION_WORKFLOW",
-			"name": "destination-evaluation-workflow",
-			"class_name": "DestinationEvaluationWorkflow"
-		}
-	],
-	"browser": {
-		"binding": "VIRTUAL_BROWSER"
-	},
-	"ai": {
-		"binding": "AI"
-	},
-	"r2_buckets": [
-		{
-			"binding": "BUCKET",
-			"bucket_name": "smart-links-eval-stage"
-		}
-	],
-	"durable_objects": {
-		"bindings": [
-			{
-				"name": "EVALUATION_SCHEDULER",
-				"class_name": "EvaluationScheduler"
+	"env": {
+		"stage": {
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_id": "c77c4213-31e5-4ca7-bdce-aadeb644db5b",
+					"remote": true
+				}
+			],
+			"kv_namespaces": [{ "binding": "CACHE", "id": "0b145f63f8d246b2b036d82eb3944c1d", "remote": true }],
+			"queues": {
+				"consumers": [
+					{ "queue": "smart-links-data-queue-stage", "dead_letter_queue": "smart-links-dead-letter-stage", "retry_delay": 0 },
+					{ "queue": "smart-links-dead-letter-stage" }
+				],
+				"producers": [{ "binding": "QUEUE", "queue": "smart-links-data-queue-stage" }]
 			},
-			{ "name": "LINK_CLICK_TRACKER_OBJECT", "class_name": "LinkClickTracker" }
-		]
-	},
-	"migrations": [
-		{
-			"tag": "v1",
-			"new_classes": ["EvaluationScheduler"]
+			"workflows": [
+				{
+					"binding": "DESTINATION_EVALUATION_WORKFLOW",
+					"name": "destination-evaluation-workflow",
+					"class_name": "DestinationEvaluationWorkflow"
+				}
+			],
+			"browser": {
+				"binding": "VIRTUAL_BROWSER"
+			},
+			"ai": {
+				"binding": "AI"
+			},
+			"r2_buckets": [
+				{
+					"binding": "BUCKET",
+					"bucket_name": "smart-links-eval-stage"
+				}
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "EVALUATION_SCHEDULER",
+						"class_name": "EvaluationScheduler"
+					},
+					{ "name": "LINK_CLICK_TRACKER_OBJECT", "class_name": "LinkClickTracker" }
+				]
+			},
+			"migrations": [
+				{
+					"tag": "v1",
+					"new_classes": ["EvaluationScheduler"]
+				},
+				{
+					"tag": "v2",
+					"new_sqlite_classes": ["LinkClickTracker"]
+				}
+			]
 		},
-		{
-			"tag": "v2",
-			"new_sqlite_classes": ["LinkClickTracker"]
+		"production": {
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_id": "b0af8b2b-0e77-469f-8af1-9c6e10f51f1f"
+				}
+			],
+			"kv_namespaces": [{ "binding": "CACHE", "id": "4ea484777679449f9472b5116ae1fa8d" }],
+			"queues": {
+				"consumers": [
+					{ "queue": "smart-links-data-queue-production", "dead_letter_queue": "smart-links-dead-letter-production", "retry_delay": 0 },
+					{ "queue": "smart-links-dead-letter-production" }
+				],
+				"producers": [{ "binding": "QUEUE", "queue": "smart-links-data-queue-production" }]
+			},
+			"workflows": [
+				{
+					"binding": "DESTINATION_EVALUATION_WORKFLOW",
+					"name": "destination-evaluation-workflow-production",
+					"class_name": "DestinationEvaluationWorkflow"
+				}
+			],
+			"browser": {
+				"binding": "VIRTUAL_BROWSER"
+			},
+			"ai": {
+				"binding": "AI"
+			},
+			"r2_buckets": [
+				{
+					"binding": "BUCKET",
+					"bucket_name": "smart-links-eval-production"
+				}
+			],
+			"durable_objects": {
+				"bindings": [
+					{
+						"name": "EVALUATION_SCHEDULER",
+						"class_name": "EvaluationScheduler"
+					},
+					{ "name": "LINK_CLICK_TRACKER_OBJECT", "class_name": "LinkClickTracker" }
+				]
+			},
+			"migrations": [
+				{
+					"tag": "v1",
+					"new_classes": ["EvaluationScheduler"]
+				},
+				{
+					"tag": "v2",
+					"new_sqlite_classes": ["LinkClickTracker"]
+				}
+			]
 		}
-	]
+	}
 }
