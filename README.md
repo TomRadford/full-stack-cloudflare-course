@@ -1,3 +1,3 @@
 # cf-services-the-course-playground
 
-Auto-deploys
+Auto-deploys!
